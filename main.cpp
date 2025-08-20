@@ -8,20 +8,35 @@ std::string input_b64;
 std::string base64_code = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 int pad_count = 0;
 
+void ascii_to_string(std::vector<int> ascii_in){
+
+	std::string output;
+	for (int i = 0; i < ascii_in.size(); i++){
+		output.push_back(static_cast<char>(ascii_in[i]));
+	}
+	std::cout << output << "\n"; 
+}
+
+
 void bit8_to_int(std::vector<std::string> bit8_input){
-	
+
+	// Int to indicate the bytes to leave off the end due to padding
+	// Used for for loop range
 	int real_bytes = bit8_input.size() - pad_count;
+
+
 	std::vector<int> int_out(real_bytes);
+
+
 	for(int i = 0; i < real_bytes; i++){
 		for(int j = 0; j < 8; j++){
-			if (bit8_input[i][j] == 1){
-				int_out[i] += pow(2, j);
+			if (bit8_input[i][j] == '1'){
+				int_out[i] += pow(2, 7-j);
 			}
 		}
-		std::cout << "int_out[" << i << "] =" << int_out[i] << "\n";
 	}
 
-	
+	ascii_to_string(int_out);
 }
 
 
@@ -29,7 +44,6 @@ void bit6_to_bit8(std::string bit6_input){
 
 	// Concatenate trailing zeros
 	int trail_zero = bit6_input.size() % 8;
-	std::cout << "trail_zero = " << trail_zero << "\n";
 
 	if (trail_zero != 0){
 		for (int i = 0; i < 8 - trail_zero; i++){
@@ -37,7 +51,6 @@ void bit6_to_bit8(std::string bit6_input){
 		}
 	}
 
-	std::cout << bit6_input;
 	int bytes = bit6_input.size()/8;
 	std::vector<std::string> bit8_out(bytes);
 
@@ -45,10 +58,8 @@ void bit6_to_bit8(std::string bit6_input){
 		for (int j = 0; j < 8; j++){
 			bit8_out[i] += bit6_input[j + 8*i];
 		}
-		std::cout << "bit8_out[" << i << "] = " << bit8_out[i] << "\n";
 	}
-	std::cout << "pad_count: " << pad_count << "\n";
-	
+
 	bit8_to_int(bit8_out);
 }
 
@@ -74,8 +85,7 @@ void indice_to_6bitbinary(std::vector<int> index_in){
 			while(str_bin_buf.size() != 6){
 				str_bin_buf = '0' + str_bin_buf;
 			}
-		}
-		std::cout << str_bin_buf << "\n";
+		}	
 		binary_out += str_bin_buf;
 	}
 
